@@ -1,4 +1,3 @@
-import com.sun.tools.javac.util.Pair;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,9 +14,8 @@ public class UberApiCallerTest {
 
     @Test
     public void getPricesFromJson() {
-        Pair<String, Double> expected = caller.getUberPoolPrices(getSampleData());
-        assertEquals("POOL", expected.fst);
-        assertEquals(new Double(19.38), expected.snd);
+        Double expected = caller.getUberPoolPrice(getSampleData());
+        assertEquals(new Double(19.38), expected);
     }
 
     private String getSampleData() {
