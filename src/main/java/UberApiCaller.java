@@ -1,6 +1,9 @@
 import com.google.common.annotations.VisibleForTesting;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -19,11 +22,13 @@ public class UberApiCaller {
             EMERYVILLE_LONGITUDE,
             SERVER_TOKEN);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        InputStream inputStreamResponse = getResponseFromUber();
+        String xmlResponse = translateToString(inputStreamResponse);
     }
 
     @VisibleForTesting
-    public InputStream getResponseFromUber() {
+    public static InputStream getResponseFromUber() {
         try {
             URL url = new URL(UBER_API_URL);
             URLConnection connection = url.openConnection();
@@ -32,6 +37,11 @@ public class UberApiCaller {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @VisibleForTesting
+    private static String translateToString(InputStream inputStreamResponse) throws IOException {
+        return new BufferedReader(new InputStreamReader(inputStreamResponse)).readLine();
     }
 
 
