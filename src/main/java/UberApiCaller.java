@@ -28,7 +28,7 @@ public class UberApiCaller {
     }
 
     @VisibleForTesting
-    public static InputStream getResponseFromUber() {
+    static InputStream getResponseFromUber() {
         try {
             URL url = new URL(UBER_API_URL);
             URLConnection connection = url.openConnection();
@@ -39,10 +39,10 @@ public class UberApiCaller {
         return null;
     }
 
-    @VisibleForTesting
     private static String translateToString(InputStream inputStreamResponse) throws IOException {
         return new BufferedReader(new InputStreamReader(inputStreamResponse)).readLine();
     }
+
 
 
 }
