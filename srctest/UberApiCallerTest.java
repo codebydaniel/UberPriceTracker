@@ -1,6 +1,5 @@
+import com.sun.tools.javac.util.Pair;
 import org.junit.Test;
-
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,10 +15,9 @@ public class UberApiCallerTest {
 
     @Test
     public void getPricesFromJson() {
-        Map<String, Double> expected = caller.getPricesFromJSON(getSampleData());
-        assertEquals(new Double(19.38), expected.get("POOL"));
-        assertEquals(new Double(26), expected.get("uberX"));
-        assertEquals(new Double(38), expected.get("uberXL"));
+        Pair<String, Double> expected = caller.getUberPoolPrices(getSampleData());
+        assertEquals("POOL", expected.fst);
+        assertEquals(new Double(19.38), expected.snd);
     }
 
     private String getSampleData() {

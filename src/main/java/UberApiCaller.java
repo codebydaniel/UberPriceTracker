@@ -1,9 +1,9 @@
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.tools.javac.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
 
 public class UberApiCaller {
 
@@ -31,7 +30,7 @@ public class UberApiCaller {
     public static void main(String[] args) throws IOException {
         InputStream inputStreamResponse = getResponseFromUber();
         String jsonResponse = translateToString(inputStreamResponse);
-        Map<String, Double> uberTypeToPrices = getPricesFromJSON(jsonResponse);
+        Pair<String, Double> uberPoolPrices = getUberPoolPrices(jsonResponse);
     }
 
     @VisibleForTesting
@@ -51,24 +50,20 @@ public class UberApiCaller {
     }
 
     @VisibleForTesting
-    static Map<String, Double> getPricesFromJSON(String jsonResponse) {
-        Map<String, Double> typeToPrices = Maps.newHashMap();
+    static Pair<String, Double> getUberPoolPrices(String jsonResponse) {
         JsonElement jsonElement = new JsonParser().parse(jsonResponse);
         JsonObject jsonObject = jsonElement.getAsJsonObject().getAsJsonObject();
         JsonArray jsonArray = jsonObject.getAsJsonArray("prices");
         for (int i = 0; i < jsonArray.size(); i++) {
             JsonObject object = jsonArray.get(i).getAsJsonObject();
             String uberType = object.get("display_name").getAsString();
-            String priceAsString = object.get("estimate").getAsString();
-            Double price;
-            if (priceAsString.contains("-")) {
-                price = Double.valueOf(priceAsString.substring(priceAsString.indexOf("-") + 1, priceAsString.length()));
-            } else {
-                price = Double.valueOf(priceAsString.substring(1));
+            if(uberType.equals("POOL")) {
+                String priceAsString = object.get("estimate").getAsString();
             }
-            typeToPrices.put(uberType, price);
+            String priceAsString = object.get("estimate").getAsString().substring(1);
+            return Pair.of(uberType, Double.valueOf(priceAsString));
         }
-        return typeToPrices;
+        return null;
     }
 
 }
